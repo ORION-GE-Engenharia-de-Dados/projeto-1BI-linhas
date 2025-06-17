@@ -25,8 +25,9 @@ O formato final dos dados será `.parquet`.
 |-----|------|----|
 | Geração de Dados | Python (Faker, Pandas, Polars) | Criação de dados sintéticos |
 | Armazenamento | MinIO | Data Lake com camadas Bronze, Silver e Gold |
-| Exploração Local | DuckDB | Análises exploratórias e validação |
-| Consulta Distribuída | Trino (Presto) | Query engine distribuído conectado ao MinIO |
+| Metastore de Metadados | Hive Metastore | Registro de schemas e tabelas para leitura via Trino |
+| Exploração Local | DuckDB | Análises exploratórias e validação rápida local |
+| Consulta Distribuída | Trino (Presto) | Query engine distribuído conectado ao MinIO e ao Hive Metastore |
 | Transformações | DBT | Modelagem de dados com camadas staging, intermediate e mart |
 | Orquestração | Apache Airflow | Agendamento e execução dos pipelines |
 | (Opcional) Visualização | Apache Superset ou Metabase | Criação de dashboards |
@@ -74,15 +75,24 @@ Seguindo a arquitetura em camadas (medallion architecture), o Data Lake será or
 
 ---
 
-### Fase 3 – Consulta Distribuída com Trino
+### Fase 3 – Registro de Metadados com Hive Metastore
 
-- Instalar e configurar o Trino (ou Presto).
+- Instalar e configurar o **Hive Metastore**.
+- Criar as tabelas externas correspondentes aos datasets armazenados no MinIO.
+- Exemplo: criar tabelas externas apontando para o bucket `landing-zone`.
+
+---
+
+### Fase 4 – Consulta Distribuída com Trino
+
+- Instalar e configurar o Trino.
+- Conectar o Trino ao **Hive Metastore**.
 - Criar catálogo S3 apontando para os buckets do MinIO.
 - Executar queries SQL sobre os dados na **Bronze** e depois sobre as camadas transformadas (**Silver/Gold**).
 
 ---
 
-### Fase 4 – Transformações com DBT
+### Fase 5 – Transformações com DBT
 
 - Estruturar o projeto DBT com três camadas de modelagem:
 
@@ -94,18 +104,21 @@ Seguindo a arquitetura em camadas (medallion architecture), o Data Lake será or
 
 - As saídas das transformações da **Staging** vão para a camada **Silver**, e os modelos finais do **Mart** vão para a camada **Gold** no MinIO.
 
+- DBT se conectará ao Trino, que por sua vez usa o Hive Metastore para interpretar os dados.
+
 ---
 
-### Fase 5 – Orquestração com Airflow
+### Fase 6 – Orquestração com Airflow
 
 - Criar um DAG no Airflow com as seguintes tasks:
 
 1. **Geração de dados**
 2. **Upload para MinIO (Bronze)**
 3. **Validação com DuckDB**
-4. **Consultas exploratórias com Trino**
-5. **Execução dos modelos DBT (gerando Silver e Gold)**
-6. **(Opcional) Geração de dashboards no Superset ou Metabase**
+4. **Registro de metadados no Hive**
+5. **Consultas exploratórias com Trino**
+6. **Execução dos modelos DBT (gerando Silver e Gold)**
+7. **(Opcional) Geração de dashboards no Superset ou Metabase**
 
 ---
 
@@ -113,6 +126,7 @@ Seguindo a arquitetura em camadas (medallion architecture), o Data Lake será or
 
 - **Python**
 - **MinIO (Data Lake com camadas Bronze, Silver e Gold)**
+- **Hive Metastore**
 - **DuckDB**
 - **Trino (Presto)**
 - **DBT**
