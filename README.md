@@ -15,7 +15,7 @@ O dataset será gerado sinteticamente. O tema pode ser escolhido entre os seguin
 - **Mobilidade:** Corridas de aplicativos de transporte
 - **IoT:** Leituras de sensores em tempo real
 
-O formato final dos dados será `.csv` ou `.parquet`.
+O formato final dos dados será `.parquet`.
 
 ---
 
@@ -59,7 +59,7 @@ Seguindo a arquitetura em camadas (medallion architecture), o Data Lake será or
   - `payment_method`
 - Formato de saída: `.parquet`.
 - Upload inicial dos dados na camada **Bronze (landing-zone)** no MinIO.
-- Usar a imagem: quay.io/minio/minio:RELEASE.2025-02-03T21-03-04Z-cpuv1
+- Usar a imagem: `quay.io/minio/minio:RELEASE.2025-02-03T21-03-04Z-cpuv1`
 
 ---
 
