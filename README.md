@@ -57,8 +57,9 @@ Seguindo a arquitetura em camadas (medallion architecture), o Data Lake será or
   - `transaction_date`
   - `merchant_category`
   - `payment_method`
-- Formato de saída: `.csv` ou `.parquet`.
+- Formato de saída: `.parquet`.
 - Upload inicial dos dados na camada **Bronze (landing-zone)** no MinIO.
+- Usar a imagem: quay.io/minio/minio:RELEASE.2025-02-03T21-03-04Z-cpuv1
 
 ---
 
