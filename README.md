@@ -24,12 +24,24 @@ O formato final dos dados será `.csv` ou `.parquet`.
 | Etapa | Ferramenta | Descrição |
 |-----|------|----|
 | Geração de Dados | Python (Faker, Pandas, Polars) | Criação de dados sintéticos |
-| Armazenamento | MinIO | Data Lake para os arquivos brutos |
+| Armazenamento | MinIO | Data Lake com camadas Bronze, Silver e Gold |
 | Exploração Local | DuckDB | Análises exploratórias e validação |
 | Consulta Distribuída | Trino (Presto) | Query engine distribuído conectado ao MinIO |
 | Transformações | DBT | Modelagem de dados com camadas staging, intermediate e mart |
 | Orquestração | Apache Airflow | Agendamento e execução dos pipelines |
 | (Opcional) Visualização | Apache Superset ou Metabase | Criação de dashboards |
+
+---
+
+## 📍 Estrutura de Camadas do Data Lake (MinIO)
+
+Seguindo a arquitetura em camadas (medallion architecture), o Data Lake será organizado da seguinte forma:
+
+| Camada | Nome | Finalidade |
+|---|---|---|
+| **Bronze (Raw / Bruto)** | `landing-zone` | Armazena os dados exatamente como gerados, sem nenhum tratamento |
+| **Silver (Processed / Limpo)** | `silver` | Dados tratados, com tipos corrigidos, dados inválidos removidos e enriquecimentos básicos aplicados |
+| **Gold (Curated / Business Ready)** | `gold` | Dados prontos para análises de negócio, com agregações, métricas e modelos de dados finais |
 
 ---
 
@@ -46,71 +58,60 @@ O formato final dos dados será `.csv` ou `.parquet`.
   - `merchant_category`
   - `payment_method`
 - Formato de saída: `.csv` ou `.parquet`.
+- Upload inicial dos dados na camada **Bronze (landing-zone)** no MinIO.
 
 ---
 
-### Fase 2 – Upload para o MinIO
+### Fase 2 – Exploração de Dados com DuckDB
 
-- Subir os arquivos para o bucket `landing-zone` no MinIO.
-- Configurar o MinIO localmente via Docker.
-
----
-
-### Fase 3 – Exploração de Dados com DuckDB
-
-- Conectar ao arquivo local ou ao MinIO.
+- Conectar ao arquivo localmente ou via S3 API com MinIO.
 - Realizar análises básicas:
   - Contagem de linhas
   - Validação de tipos
   - Estatísticas descritivas
+- Tudo será feito diretamente sobre os dados da camada **Bronze**.
 
 ---
 
-### Fase 4 – Query Distribuída com Trino
+### Fase 3 – Consulta Distribuída com Trino
 
 - Instalar e configurar o Trino (ou Presto).
-- Criar catálogo apontando para o MinIO.
-- Executar queries SQL distribuídas.
-
-Exemplos de queries:
-- `SELECT COUNT(*)`
-- Agregações por categoria
-- Filtragem por intervalo de datas
+- Criar catálogo S3 apontando para os buckets do MinIO.
+- Executar queries SQL sobre os dados na **Bronze** e depois sobre as camadas transformadas (**Silver/Gold**).
 
 ---
 
-### Fase 5 – Transformações com DBT
+### Fase 4 – Transformações com DBT
 
-- Estruturar o projeto DBT.
-- Criar as seguintes camadas:
+- Estruturar o projeto DBT com três camadas de modelagem:
 
 | Camada | Finalidade |
 |----|----|
-| Staging | Tratamento inicial e padronização de dados |
-| Intermediate | Limpeza, enriquecimento e junções |
-| Mart | Tabelas finais analíticas |
+| **Staging** | Leitura da camada Bronze, ajustes de tipos e padronizações iniciais |
+| **Intermediate** | Limpeza, enriquecimento, remoção de duplicatas e filtros de qualidade |
+| **Mart** | Criação de tabelas finais para consumo de negócio (ex: fatos e dimensões) |
 
-- Executar os modelos DBT com Trino como backend.
+- As saídas das transformações da **Staging** vão para a camada **Silver**, e os modelos finais do **Mart** vão para a camada **Gold** no MinIO.
 
 ---
 
-### Fase 6 – Orquestração com Airflow
+### Fase 5 – Orquestração com Airflow
 
 - Criar um DAG no Airflow com as seguintes tasks:
 
 1. **Geração de dados**
-2. **Upload para MinIO**
+2. **Upload para MinIO (Bronze)**
 3. **Validação com DuckDB**
-4. **Consultas com Trino**
-5. **Execução de modelos DBT**
-6. **(Opcional) Geração de dashboard**
+4. **Consultas exploratórias com Trino**
+5. **Execução dos modelos DBT (gerando Silver e Gold)**
+6. **(Opcional) Geração de dashboards no Superset ou Metabase**
 
 ---
 
-## ✅ Tecnologias
+## ✅ Tecnologias Finais
 
 - **Python**
-- **MinIO**
+- **MinIO (Data Lake com camadas Bronze, Silver e Gold)**
 - **DuckDB**
 - **Trino (Presto)**
 - **DBT**
@@ -127,4 +128,4 @@ Exemplos de queries:
 
 ---
 
-**Bons estudos! 🚀**
+**Bons estudos e bom projeto! 🚀**
