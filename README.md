@@ -7,3 +7,11 @@ Criar um pipeline de dados, passando pela ingestão, armazenamento e processamen
 Fique livre para escolher o contexto desses dados, pode ser financeiro, mobiliário, etc...
 
 # Ferramentas
+
+# Sprints
+ - 1 Criação de arquivo
+ - 2 Ingestão
+ - 3 Limpeza
+ - 4 Camada silver
+ - 5 Transformação e agregação
+ - 6 Disponibilização na Camada gold
