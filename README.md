@@ -17,7 +17,7 @@ O dataset será gerado sinteticamente. O tema pode ser escolhido entre os seguin
 - **Mobilidade:** Corridas de aplicativos de transporte
 - **IoT:** Leituras de sensores em tempo real
 
-O formato final dos dados será `.parquet`.
+O formato final dos dados será `.parquet` ou `.csv`.
 
 ---
 
