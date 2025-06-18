@@ -4,7 +4,7 @@
 
 Este projeto tem como objetivo desenvolver um pipeline completo de Engenharia de Dados, processando um dataset com 1 bilhão de linhas. O pipeline seguirá todas as etapas de um processo profissional de ETL (Extração, Transformação e Carga), utilizando ferramentas **open source** amplamente utilizadas no mercado.
 
-![Image](https://github.com/user-attachments/assets/846936ea-6cfd-4613-b271-f9f71ca75392)
+![Image](https://github.com/user-attachments/assets/82eb5d15-298e-4df4-882e-74451ec88e53)
 
 ---
 
