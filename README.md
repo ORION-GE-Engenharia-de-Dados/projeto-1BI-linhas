@@ -50,7 +50,7 @@ Seguindo a arquitetura em camadas (medallion architecture), o Data Lake será or
 
 ### Fase 1 – Geração de Dados
 
-- Desenvolver um script em Python para gerar um arquivo com 1 bilhão de linhas.
+- Desenvolver um script em Python (pode usar a engine do DuckDB) para gerar um arquivo com 1 bilhão de linhas.
 - Exemplos de colunas (tema financeiro):
   - `transaction_id`
   - `customer_id`
@@ -58,7 +58,7 @@ Seguindo a arquitetura em camadas (medallion architecture), o Data Lake será or
   - `transaction_date`
   - `merchant_category`
   - `payment_method`
-- Formato de saída: `.parquet`.
+- Formato de saída: `.parquet` ou `.csv`.
 - Upload inicial dos dados na camada **Bronze (landing-zone)** no MinIO.
 - Usar a imagem: `quay.io/minio/minio:RELEASE.2025-02-03T21-03-04Z-cpuv1`
 
