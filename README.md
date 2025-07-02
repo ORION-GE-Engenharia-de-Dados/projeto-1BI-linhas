@@ -62,7 +62,7 @@ Seguindo a arquitetura em camadas (medallion architecture), o Data Lake será or
   - `payment_method`
 - Formato de saída: `.parquet` ou `.csv`.
 - Upload inicial dos dados na camada **Bronze (landing-zone)** no MinIO.
-- Usar a imagem: `quay.io/minio/minio:RELEASE.2025-02-03T21-03-04Z-cpuv1`
+- Usar a imagem: `minio/minio:RELEASE.2025-02-03T21-03-04Z-cpuv1`
 
 ---
 
